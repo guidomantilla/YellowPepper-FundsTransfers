@@ -1,0 +1,21 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  db:
+    image: mysql
+    restart: always
+    ports:
+      - "3307:3306"
+      - "33070:33060"
+    volumes:
+      - db_data:/var/lib/mysql
+      - type: bind
+        source: ./script.sql
+        target: /docker-entrypoint-initdb.d/script.sql
+    environment:
+      MYSQL_DATABASE: 'yellow-pepper-funds-transfer'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: 'Raven123qweasd*'
+      MYSQL_USER: 'yellow-pepper-funds-transfer'
+      MYSQL_PASSWORD: 'Raven123qweasd+'
+volumes:
+  db_data: { }
