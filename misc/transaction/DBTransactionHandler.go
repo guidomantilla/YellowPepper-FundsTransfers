@@ -31,9 +31,8 @@ func (handler *DefaultDBTransactionHandler) HandleTransaction(fn DBTransactionHa
 
 	defer func() {
 		if p := recover(); p != nil {
-			// a panic occurred, rollback and repanic
 			handleError(tx.Rollback())
-			panic(p)
+			log.Fatalln(err)
 		} else if err != nil {
 			// something went wrong, rollback
 			handleError(tx.Rollback())
@@ -49,6 +48,6 @@ func (handler *DefaultDBTransactionHandler) HandleTransaction(fn DBTransactionHa
 }
 func handleError(err error) {
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 }

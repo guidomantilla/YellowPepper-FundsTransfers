@@ -2,6 +2,7 @@ package impl
 
 import (
 	"database/sql"
+	"log"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -18,11 +19,11 @@ func NewMysqlDataSource(username string, password string, url string) *MysqlData
 
 	database, err := sql.Open("mysql", url)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 
 	if err = database.Ping(); err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 
 	return &MysqlDataSource{

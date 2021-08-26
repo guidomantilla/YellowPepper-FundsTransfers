@@ -18,4 +18,4 @@ services:
       MYSQL_USER: 'yellow-pepper-funds-transfer'
       MYSQL_PASSWORD: 'Raven123qweasd+'
 volumes:
-  db_data: { }
+  db_data:
