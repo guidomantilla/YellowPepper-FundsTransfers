@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"YellowPepper-FundsTransfers/core/model"
+	"YellowPepper-FundsTransfers/pkg/core/model"
 	"database/sql"
 	"errors"
 	"fmt"

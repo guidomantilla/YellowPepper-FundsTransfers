@@ -1,7 +1,7 @@
 package config
 
 import (
-	"YellowPepper-FundsTransfers/core/ws"
+	"YellowPepper-FundsTransfers/pkg/core/ws"
 
 	"github.com/gin-gonic/gin"
 )

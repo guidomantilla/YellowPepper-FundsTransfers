@@ -1,7 +1,7 @@
 package main
 
 import (
-	"YellowPepper-FundsTransfers/application"
+	"YellowPepper-FundsTransfers/pkg/application"
 	"log"
 	"os"
 )

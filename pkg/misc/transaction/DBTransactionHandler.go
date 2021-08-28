@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	"YellowPepper-FundsTransfers/misc/datasource"
+	"YellowPepper-FundsTransfers/pkg/misc/datasource"
 	"database/sql"
 	"log"
 )

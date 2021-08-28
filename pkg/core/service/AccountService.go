@@ -1,10 +1,10 @@
 package service
 
 import (
-	"YellowPepper-FundsTransfers/core/exception"
-	"YellowPepper-FundsTransfers/core/model"
-	"YellowPepper-FundsTransfers/core/repository"
-	"YellowPepper-FundsTransfers/misc/transaction"
+	"YellowPepper-FundsTransfers/pkg/core/exception"
+	"YellowPepper-FundsTransfers/pkg/core/model"
+	"YellowPepper-FundsTransfers/pkg/core/repository"
+	"YellowPepper-FundsTransfers/pkg/misc/transaction"
 	"database/sql"
 	"errors"
 	"strings"

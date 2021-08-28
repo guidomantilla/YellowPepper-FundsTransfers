@@ -1,13 +1,13 @@
 package application
 
 import (
-	"YellowPepper-FundsTransfers/config"
-	"YellowPepper-FundsTransfers/core/repository"
-	"YellowPepper-FundsTransfers/core/service"
-	"YellowPepper-FundsTransfers/core/ws"
-	datasource "YellowPepper-FundsTransfers/misc/datasource/impl"
-	"YellowPepper-FundsTransfers/misc/environment"
-	"YellowPepper-FundsTransfers/misc/transaction"
+	"YellowPepper-FundsTransfers/pkg/config"
+	"YellowPepper-FundsTransfers/pkg/core/repository"
+	"YellowPepper-FundsTransfers/pkg/core/service"
+	"YellowPepper-FundsTransfers/pkg/core/ws"
+	datasource "YellowPepper-FundsTransfers/pkg/misc/datasource/impl"
+	"YellowPepper-FundsTransfers/pkg/misc/environment"
+	"YellowPepper-FundsTransfers/pkg/misc/transaction"
 )
 
 const (

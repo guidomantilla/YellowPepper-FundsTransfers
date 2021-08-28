@@ -1,9 +1,9 @@
 package ws
 
 import (
-	"YellowPepper-FundsTransfers/core/exception"
-	"YellowPepper-FundsTransfers/core/model"
-	"YellowPepper-FundsTransfers/core/service"
+	"YellowPepper-FundsTransfers/pkg/core/exception"
+	"YellowPepper-FundsTransfers/pkg/core/model"
+	"YellowPepper-FundsTransfers/pkg/core/service"
 	"fmt"
 	"net/http"
 	"strconv"

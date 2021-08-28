@@ -1,7 +1,7 @@
 package environment
 
 import (
-	"YellowPepper-FundsTransfers/misc/properties"
+	"YellowPepper-FundsTransfers/pkg/misc/properties"
 )
 
 type Environment interface {

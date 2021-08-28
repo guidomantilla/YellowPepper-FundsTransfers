@@ -1,8 +1,8 @@
 package config
 
 import (
-	"YellowPepper-FundsTransfers/misc/environment"
-	"YellowPepper-FundsTransfers/misc/properties"
+	"YellowPepper-FundsTransfers/pkg/misc/environment"
+	"YellowPepper-FundsTransfers/pkg/misc/properties"
 	"os"
 )
 
