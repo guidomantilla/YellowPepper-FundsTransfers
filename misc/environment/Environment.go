@@ -5,7 +5,8 @@ import (
 )
 
 type Environment interface {
-	Get(property string) EnvVar
+	GetValue(property string) EnvVar
+	GetValueOrDefault(property string, defaultValue string) EnvVar
 }
 
 type DefaultEnvironment struct {
@@ -24,7 +25,7 @@ func NewDefaultEnvironment(propertySources ...properties.PropertySource) *Defaul
 	}
 }
 
-func (environment *DefaultEnvironment) Get(property string) EnvVar {
+func (environment *DefaultEnvironment) GetValue(property string) EnvVar {
 
 	var value string
 	for _, source := range environment.propertySources {
@@ -35,4 +36,13 @@ func (environment *DefaultEnvironment) Get(property string) EnvVar {
 		}
 	}
 	return NewEnvVar(value)
+}
+
+func (environment *DefaultEnvironment) GetValueOrDefault(property string, defaultValue string) EnvVar {
+
+	envVar := environment.GetValue(property)
+	if envVar != "" {
+		return envVar
+	}
+	return NewEnvVar(defaultValue)
 }

@@ -34,14 +34,6 @@ func NewDefaultTransferService(dbTransactionHandler transaction.DBTransactionHan
 	}
 }
 
-/* CONST FOR METHODS */
-
-const (
-	EXECUTE_TRANSFER_ERROR_TITLE    = "error executing the transfer"
-	FIND_TRANSFER_BY_ID_ERROR_TITLE = "error finding the transfer"
-	FIND_TRANSFER_ERROR_TITLE       = "error finding the transfers"
-)
-
 /* DefaultTransferService METHODS */
 
 func (service DefaultTransferService) DoTransfer(transferRequest *dto.Transfer) *dto.Transfer {
@@ -54,7 +46,7 @@ func (service DefaultTransferService) DoTransfer(transferRequest *dto.Transfer) 
 
 	if err := createTransferValidation(transferRequest); err != nil {
 		transferResponse.Status = "ERROR"
-		transferResponse.Errors = *exception.BadRequestException(EXECUTE_TRANSFER_ERROR_TITLE, err)
+		transferResponse.Errors = *exception.BadRequestException("error executing the transfer", err)
 		return transferResponse
 	}
 
@@ -102,7 +94,7 @@ func (service DefaultTransferService) DoTransfer(transferRequest *dto.Transfer) 
 
 	if err != nil {
 		transferResponse.Status = "ERROR"
-		transferResponse.Errors = *exception.BadRequestException(EXECUTE_TRANSFER_ERROR_TITLE, err)
+		transferResponse.Errors = *exception.BadRequestException("error executing the transfer", err)
 		return transferResponse
 	}
 
@@ -124,7 +116,7 @@ func (service DefaultTransferService) FindTransfer(id int64) (*model.Transfer, *
 	})
 
 	if err != nil {
-		return nil, exception.BadRequestException(FIND_TRANSFER_BY_ID_ERROR_TITLE, err)
+		return nil, exception.BadRequestException("error finding the transfer", err)
 	}
 
 	return transfer, nil
@@ -144,7 +136,7 @@ func (service DefaultTransferService) FindTransfers() (*[]model.Transfer, *excep
 	})
 
 	if err != nil {
-		return nil, exception.BadRequestException(FIND_TRANSFER_ERROR_TITLE, err)
+		return nil, exception.BadRequestException("error finding the transfers", err)
 	}
 
 	return transfer, nil

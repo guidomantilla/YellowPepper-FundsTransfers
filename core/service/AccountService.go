@@ -34,22 +34,12 @@ func NewDefaultAccountService(dbTransactionHandler transaction.DBTransactionHand
 	}
 }
 
-/* CONST FOR METHODS */
-
-const (
-	CREATE_ACCOUNT_ERROR_TITLE     = "error creating the account"
-	UPDATE_ACCOUNT_ERROR_TITLE     = "error updating the account"
-	DELETE_ACCOUNT_ERROR_TITLE     = "error deleting the account"
-	FIND_ACCOUNT_BY_ID_ERROR_TITLE = "error finding the account"
-	FIND_ACCOUNT_ERROR_TITLE       = "error finding the accounts"
-)
-
 /* DefaultAccountService METHODS */
 
 func (service DefaultAccountService) Create(account *model.Account) *exception.Exception {
 
 	if err := createAccountValidation(account); err != nil {
-		return exception.BadRequestException(CREATE_ACCOUNT_ERROR_TITLE, err)
+		return exception.BadRequestException("error creating the account", err)
 	}
 
 	err := service.HandleTransaction(func(tx *sql.Tx) error {
@@ -62,7 +52,7 @@ func (service DefaultAccountService) Create(account *model.Account) *exception.E
 	})
 
 	if err != nil {
-		return exception.InternalServerErrorException(CREATE_ACCOUNT_ERROR_TITLE, err)
+		return exception.InternalServerErrorException("error creating the account", err)
 	}
 
 	return nil
@@ -71,7 +61,7 @@ func (service DefaultAccountService) Create(account *model.Account) *exception.E
 func (service DefaultAccountService) Update(account *model.Account) *exception.Exception {
 
 	if err := updateAccountValidation(account); err != nil {
-		return exception.BadRequestException(UPDATE_ACCOUNT_ERROR_TITLE, err)
+		return exception.BadRequestException("error updating the account", err)
 	}
 
 	err := service.HandleTransaction(func(tx *sql.Tx) error {
@@ -88,7 +78,7 @@ func (service DefaultAccountService) Update(account *model.Account) *exception.E
 	})
 
 	if err != nil {
-		return exception.InternalServerErrorException(UPDATE_ACCOUNT_ERROR_TITLE, err)
+		return exception.InternalServerErrorException("error updating the account", err)
 	}
 	return nil
 }
@@ -109,7 +99,7 @@ func (service DefaultAccountService) DeleteById(id int64) *exception.Exception {
 	})
 
 	if err != nil {
-		return exception.InternalServerErrorException(DELETE_ACCOUNT_ERROR_TITLE, err)
+		return exception.InternalServerErrorException("error deleting the account", err)
 	}
 	return nil
 
@@ -130,7 +120,7 @@ func (service DefaultAccountService) FindById(id int64) (*model.Account, *except
 	})
 
 	if err != nil {
-		return nil, exception.InternalServerErrorException(FIND_ACCOUNT_BY_ID_ERROR_TITLE, err)
+		return nil, exception.InternalServerErrorException("error finding the account", err)
 	}
 
 	return account, nil
@@ -151,7 +141,7 @@ func (service DefaultAccountService) FindAll() (*[]model.Account, *exception.Exc
 	})
 
 	if err != nil {
-		return nil, exception.InternalServerErrorException(FIND_ACCOUNT_ERROR_TITLE, err)
+		return nil, exception.InternalServerErrorException("error finding the accounts", err)
 	}
 
 	return accounts, nil
