@@ -17,6 +17,8 @@ const (
 	FUND_TRANSFERS_DATASOURCE_URL      = "FUND_TRANSFERS_DATASOURCE_URL"
 	HOST_POST                          = "HOST_POST"
 	HOST_POST_DEFAULT_VALUE            = ":8080"
+	PROFILE                            = "PROFILE"
+	PROFILE_DEFAULT_VALUE              = "default"
 )
 
 func Run(args *[]string) error {
