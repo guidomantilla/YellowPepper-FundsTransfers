@@ -9,6 +9,7 @@ import (
 type Properties interface {
 	Add(property string, value string)
 	Get(property string) string
+	AsMap() map[string]string
 }
 
 type DefaultProperties struct {
@@ -41,4 +42,8 @@ func (p *DefaultProperties) Add(property string, value string) {
 
 func (p *DefaultProperties) Get(property string) string {
 	return p.internalMap[property]
+}
+
+func (p *DefaultProperties) AsMap() map[string]string {
+	return p.internalMap
 }

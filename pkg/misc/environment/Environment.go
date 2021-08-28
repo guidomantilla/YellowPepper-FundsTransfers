@@ -7,6 +7,7 @@ import (
 type Environment interface {
 	GetValue(property string) EnvVar
 	GetValueOrDefault(property string, defaultValue string) EnvVar
+	GetPropertySources() []properties.PropertySource
 }
 
 type DefaultEnvironment struct {
@@ -15,9 +16,9 @@ type DefaultEnvironment struct {
 
 func NewDefaultEnvironment(propertySources ...properties.PropertySource) *DefaultEnvironment {
 
-	var propertySourcesArray []properties.PropertySource
-	for _, source := range propertySources {
-		propertySourcesArray = append(propertySources, source)
+	propertySourcesArray := make([]properties.PropertySource, len(propertySources))
+	for index, source := range propertySources {
+		propertySourcesArray[index] = source
 	}
 
 	return &DefaultEnvironment{
@@ -45,4 +46,8 @@ func (environment *DefaultEnvironment) GetValueOrDefault(property string, defaul
 		return envVar
 	}
 	return NewEnvVar(defaultValue)
+}
+
+func (environment *DefaultEnvironment) GetPropertySources() []properties.PropertySource {
+	return environment.propertySources
 }

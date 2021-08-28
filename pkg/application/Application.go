@@ -1,10 +1,11 @@
 package application
 
 import (
-	"YellowPepper-FundsTransfers/pkg/config"
+	"YellowPepper-FundsTransfers/pkg/application/config"
 	"YellowPepper-FundsTransfers/pkg/core/repository"
 	"YellowPepper-FundsTransfers/pkg/core/service"
-	"YellowPepper-FundsTransfers/pkg/core/ws"
+	coreWs "YellowPepper-FundsTransfers/pkg/core/ws"
+	mgmtWs "YellowPepper-FundsTransfers/pkg/mgmt/ws"
 	datasource "YellowPepper-FundsTransfers/pkg/misc/datasource/impl"
 	"YellowPepper-FundsTransfers/pkg/misc/environment"
 	"YellowPepper-FundsTransfers/pkg/misc/transaction"
@@ -21,13 +22,15 @@ const (
 func Run(args *[]string) error {
 
 	env := config.LoadEnvironment(args)
-	accountWs, transferWs := wire(env)
-	router := config.LoadApiRoutes(accountWs, transferWs)
+	accountWs, transferWs := wireApi(env)
+	infoWs, envWs, metricsWs, healthWs := wireMgmt(env)
+
+	router := config.NewDefaultApiConfig().LoadApiRoutes(accountWs, transferWs).LoadMgmtRoutes(infoWs, envWs, metricsWs, healthWs).GetEngine()
 	hostAddress := env.GetValueOrDefault(HOST_POST, HOST_POST_DEFAULT_VALUE).AsString()
 	return router.Run(hostAddress)
 }
 
-func wire(environment environment.Environment) (ws.AccountWs, ws.TransferWs) {
+func wireApi(environment environment.Environment) (coreWs.AccountWs, coreWs.TransferWs) {
 
 	FundTransfersDatasourceUsername := environment.GetValue(FUND_TRANSFERS_DATASOURCE_USERNAME).AsString()
 	FundTransfersDatasourcePassword := environment.GetValue(FUND_TRANSFERS_DATASOURCE_PASSWORD).AsString()
@@ -42,8 +45,16 @@ func wire(environment environment.Environment) (ws.AccountWs, ws.TransferWs) {
 	accountService := service.NewDefaultAccountService(transactionHandler, accountRepository)
 	transferService := service.NewDefaultTransferService(transactionHandler, transferRepository, accountRepository)
 
-	accountWs := ws.NewDefaultAccountWs(accountService)
-	transferWs := ws.NewDefaultTransferWs(transferService)
+	accountWs := coreWs.NewDefaultAccountWs(accountService)
+	transferWs := coreWs.NewDefaultTransferWs(transferService)
 
 	return accountWs, transferWs
+}
+
+func wireMgmt(environment environment.Environment) (mgmtWs.InfoWs, mgmtWs.EnvWs, mgmtWs.MetricsWs, mgmtWs.HealthWs) {
+	infoWs := mgmtWs.NewDefaultInfoWs()
+	envWs := mgmtWs.NewDefaultEnvWs(environment)
+	metricsWs := mgmtWs.NewDefaultMetricsWs()
+	healthWs := mgmtWs.NewDefaultHealthWs()
+	return infoWs, envWs, metricsWs, healthWs
 }
