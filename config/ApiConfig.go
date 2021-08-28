@@ -6,12 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var router *gin.Engine
+var singletonRouter *gin.Engine
+
+func LoadApiRoutes(accountWs ws.AccountWs, transferWs ws.TransferWs) *gin.Engine {
+	if singletonRouter == nil {
+		loadApiRoutes(accountWs, transferWs)
+	}
+	return singletonRouter
+}
 
 func loadApiRoutes(accountWs ws.AccountWs, transferWs ws.TransferWs) {
-	router = gin.Default()
-
-	api := router.Group("/api")
+	singletonRouter = gin.Default()
+	api := singletonRouter.Group("/api")
 	{
 		api.GET("/transfers", transferWs.FindTransfers)
 		api.GET("/transfers/:id", transferWs.FindTransfer)
@@ -28,15 +34,5 @@ func loadApiRoutes(accountWs ws.AccountWs, transferWs ws.TransferWs) {
 
 		api.DELETE("/accounts", accountWs.Delete)
 		api.DELETE("/accounts/:id", accountWs.Delete)
-
 	}
-
-}
-func LoadApiRoutes(accountWs ws.AccountWs, transferWs ws.TransferWs) *gin.Engine {
-
-	if router == nil {
-		loadApiRoutes(accountWs, transferWs)
-	}
-
-	return router
 }

@@ -78,11 +78,11 @@ func (service DefaultTransferService) DoTransfer(transferRequest *dto.Transfer) 
 		destinationAccount.Balance += transferRequest.Amount
 
 		transfer := &model.Transfer{
-			OriginAccount: transferRequest.OriginAccount,
+			OriginAccount:      transferRequest.OriginAccount,
 			DestinationAccount: transferRequest.DestinationAccount,
-			Amount: transferRequest.Amount,
-			Date: "DATE",
-			Status: "OK",
+			Amount:             transferRequest.Amount,
+			Date:               "DATE",
+			Status:             "OK",
 		}
 
 		if err = service.accountRepository.Update(originAccount, tx); err != nil {

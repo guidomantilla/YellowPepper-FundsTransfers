@@ -1,7 +1,7 @@
 package ws
 
 import (
-	 "YellowPepper-FundsTransfers/core/exception"
+	"YellowPepper-FundsTransfers/core/exception"
 	"YellowPepper-FundsTransfers/core/model"
 	"YellowPepper-FundsTransfers/core/service"
 	"fmt"
