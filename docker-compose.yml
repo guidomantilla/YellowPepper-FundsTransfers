@@ -9,7 +9,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - type: bind
-        source: ./.resources/script.sql
+        source: ./pkg/.resources/script.sql
         target: /docker-entrypoint-initdb.d/script.sql
     environment:
       MYSQL_DATABASE: 'yellow-pepper-funds-transfer'
