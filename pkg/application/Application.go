@@ -6,9 +6,11 @@ import (
 	"YellowPepper-FundsTransfers/pkg/core/service"
 	coreWs "YellowPepper-FundsTransfers/pkg/core/ws"
 	mgmtWs "YellowPepper-FundsTransfers/pkg/mgmt/ws"
-	datasource "YellowPepper-FundsTransfers/pkg/misc/datasource/impl"
+	"YellowPepper-FundsTransfers/pkg/misc/datasource"
 	"YellowPepper-FundsTransfers/pkg/misc/environment"
 	"YellowPepper-FundsTransfers/pkg/misc/transaction"
+
+	"github.com/gin-gonic/gin"
 )
 
 const (
@@ -21,24 +23,29 @@ const (
 	PROFILE_DEFAULT_VALUE              = "default"
 )
 
-func Run(args *[]string) error {
+var singletonRouter *gin.Engine
+var singletonEnvironment environment.Environment
 
-	env := config.LoadEnvironment(args)
-	accountWs, transferWs := wireApi(env)
-	infoWs, envWs, metricsWs, healthWs := wireMgmt(env)
+func Run() error {
 
-	router := config.NewDefaultApiConfig().LoadApiRoutes(accountWs, transferWs).LoadMgmtRoutes(infoWs, envWs, metricsWs, healthWs).GetEngine()
-	hostAddress := env.GetValueOrDefault(HOST_POST, HOST_POST_DEFAULT_VALUE).AsString()
-	return router.Run(hostAddress)
+	singletonEnvironment = config.LoadEnvironment()
+	accountWs, transferWs := wireApi(singletonEnvironment)
+	infoWs, envWs, metricsWs, healthWs := wireMgmt(singletonEnvironment)
+
+	singletonRouter = gin.Default()
+	config.LoadApiRoutes(singletonRouter, accountWs, transferWs)
+	config.LoadMgmtRoutes(singletonRouter, infoWs, envWs, metricsWs, healthWs)
+	hostAddress := singletonEnvironment.GetValueOrDefault(HOST_POST, HOST_POST_DEFAULT_VALUE).AsString()
+	return singletonRouter.Run(hostAddress)
 }
 
 func wireApi(environment environment.Environment) (coreWs.AccountWs, coreWs.TransferWs) {
 
-	FundTransfersDatasourceUsername := environment.GetValue(FUND_TRANSFERS_DATASOURCE_USERNAME).AsString()
-	FundTransfersDatasourcePassword := environment.GetValue(FUND_TRANSFERS_DATASOURCE_PASSWORD).AsString()
-	FundTransfersDatasourceUrl := environment.GetValue(FUND_TRANSFERS_DATASOURCE_URL).AsString()
+	username := environment.GetValue(FUND_TRANSFERS_DATASOURCE_USERNAME).AsString()
+	password := environment.GetValue(FUND_TRANSFERS_DATASOURCE_PASSWORD).AsString()
+	url := environment.GetValue(FUND_TRANSFERS_DATASOURCE_URL).AsString()
 
-	dataSource := datasource.NewMysqlDataSource(FundTransfersDatasourceUsername, FundTransfersDatasourcePassword, FundTransfersDatasourceUrl)
+	dataSource := datasource.NewMysqlDataSource(username, password, url)
 	transactionHandler := transaction.NewDefaultDBTransactionHandler(dataSource)
 
 	transferRepository := repository.NewDefaultTransferRepository()

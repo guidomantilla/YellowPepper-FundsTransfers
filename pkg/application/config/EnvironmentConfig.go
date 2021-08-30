@@ -6,16 +6,21 @@ import (
 	"os"
 )
 
-var singletonEnvironment environment.Environment
+const (
+	OS_PROPERTY_SOURCE_NAME  = "OS"
+	CMD_PROPERTY_SOURCE_NAME = "CMD"
+)
 
-func LoadEnvironment(args *[]string) environment.Environment {
-	if singletonEnvironment == nil {
-		osArgs := os.Environ()
-		osSource := properties.NewDefaultPropertySource("OS", properties.NewPropertiesFromArray(&osArgs))
-		argsSource := properties.NewDefaultPropertySource("CMD", properties.NewPropertiesFromArray(args))
-		singletonEnvironment = environment.NewDefaultEnvironment(argsSource, osSource)
+func LoadEnvironment() environment.Environment {
 
-		//ioutil.ReadFile()
-	}
-	return singletonEnvironment
+	//ioutil.ReadFile()
+
+	osArgs := os.Environ()
+	osSource := properties.NewDefaultPropertySource(OS_PROPERTY_SOURCE_NAME, properties.NewPropertiesFromArray(&osArgs))
+
+	cmdArgs := os.Args[1:]
+	cmdSource := properties.NewDefaultPropertySource(CMD_PROPERTY_SOURCE_NAME, properties.NewPropertiesFromArray(&cmdArgs))
+
+	env := environment.NewDefaultEnvironment(cmdSource, osSource)
+	return env
 }
