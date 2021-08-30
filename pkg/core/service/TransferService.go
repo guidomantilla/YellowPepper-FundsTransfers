@@ -45,8 +45,7 @@ func (service DefaultTransferService) DoTransfer(transferRequest *dto.Transfer) 
 	}
 
 	if err := createTransferValidation(transferRequest); err != nil {
-		transferResponse.Status = "ERROR"
-		transferResponse.Errors = *exception.BadRequestException("error executing the transfer", err)
+		transferResponse.Status, transferResponse.Errors = "ERROR", *exception.BadRequestException("error executing the transfer", err)
 		return transferResponse
 	}
 
@@ -93,8 +92,7 @@ func (service DefaultTransferService) DoTransfer(transferRequest *dto.Transfer) 
 	})
 
 	if err != nil {
-		transferResponse.Status = "ERROR"
-		transferResponse.Errors = *exception.BadRequestException("error executing the transfer", err)
+		transferResponse.Status, transferResponse.Errors = "ERROR", *exception.BadRequestException("error executing the transfer", err)
 		return transferResponse
 	}
 
