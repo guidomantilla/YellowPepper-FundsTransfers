@@ -24,7 +24,6 @@ func (source *DefaultPropertySource) Get(property string) string {
 func (source *DefaultPropertySource) AsMap() map[string]interface{} {
 
 	internalMap := make(map[string]interface{}, 0)
-	internalMap["name"] = source.name
-	internalMap["value"] = source.properties.AsMap()
+	internalMap["name"], internalMap["value"] = source.name, source.properties.AsMap()
 	return internalMap
 }
