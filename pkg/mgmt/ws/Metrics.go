@@ -24,7 +24,7 @@ func NewDefaultMetricsWs() *DefaultMetricsWs {
 
 /* DefaultMetricsWs METHODS */
 
-func (ws DefaultMetricsWs) Get(context *gin.Context) {
+func (ws *DefaultMetricsWs) Get(context *gin.Context) {
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)
 	context.JSON(http.StatusOK, mem)
