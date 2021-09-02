@@ -33,7 +33,7 @@ func (ws DefaultTransferWs) DoTransfer(context *gin.Context) {
 		return
 	}
 
-	transferResponse := ws.transferService.DoTransfer(&transferRequest)
+	transferResponse := ws.transferService.DoTransfer(context, &transferRequest)
 	if transferResponse.Status == "ERROR" {
 		context.JSON(transferResponse.Errors.Code, transferResponse)
 		return
@@ -56,7 +56,7 @@ func (ws DefaultTransferWs) FindTransfer(context *gin.Context) {
 		return
 	}
 
-	account, exception := ws.transferService.FindTransfer(id)
+	account, exception := ws.transferService.FindTransfer(context, id)
 	if exception != nil {
 		context.JSON(exception.Code, exception)
 		return
@@ -67,7 +67,7 @@ func (ws DefaultTransferWs) FindTransfer(context *gin.Context) {
 
 func (ws DefaultTransferWs) FindTransfers(context *gin.Context) {
 
-	accounts, exception := ws.transferService.FindTransfers()
+	accounts, exception := ws.transferService.FindTransfers(context)
 	if exception != nil {
 		context.JSON(exception.Code, exception)
 		return

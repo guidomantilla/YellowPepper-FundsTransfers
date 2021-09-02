@@ -6,6 +6,7 @@ import (
 	"YellowPepper-FundsTransfers/pkg/core/repository"
 	"YellowPepper-FundsTransfers/pkg/core/service/dto"
 	"YellowPepper-FundsTransfers/pkg/misc/transaction"
+	"context"
 	"database/sql"
 	"errors"
 )
@@ -13,9 +14,9 @@ import (
 /* TYPES DEFINITION */
 
 type TransferService interface {
-	DoTransfer(transferRequest *dto.Transfer) *dto.Transfer
-	FindTransfer(id int64) (*model.Transfer, *exception.Exception)
-	FindTransfers() (*[]model.Transfer, *exception.Exception)
+	DoTransfer(context context.Context, transferRequest *dto.Transfer) *dto.Transfer
+	FindTransfer(context context.Context, id int64) (*model.Transfer, *exception.Exception)
+	FindTransfers(context context.Context) (*[]model.Transfer, *exception.Exception)
 }
 
 type DefaultTransferService struct {
@@ -36,7 +37,7 @@ func NewDefaultTransferService(dbTransactionHandler transaction.DBTransactionHan
 
 /* DefaultTransferService METHODS */
 
-func (service DefaultTransferService) DoTransfer(transferRequest *dto.Transfer) *dto.Transfer {
+func (service DefaultTransferService) DoTransfer(context context.Context, transferRequest *dto.Transfer) *dto.Transfer {
 
 	transferResponse := &dto.Transfer{
 		OriginAccount:      transferRequest.OriginAccount,
@@ -51,12 +52,12 @@ func (service DefaultTransferService) DoTransfer(transferRequest *dto.Transfer) 
 
 	err := service.HandleTransaction(func(tx *sql.Tx) error {
 
-		originAccount, err := service.accountRepository.FindByNumber(transferRequest.OriginAccount, tx)
+		originAccount, err := service.accountRepository.FindByNumber(context, tx, transferRequest.OriginAccount)
 		if err != nil {
 			return err
 		}
 
-		destinationAccount, err := service.accountRepository.FindByNumber(transferRequest.DestinationAccount, tx)
+		destinationAccount, err := service.accountRepository.FindByNumber(context, tx, transferRequest.DestinationAccount)
 		if err != nil {
 			return err
 		}
@@ -76,15 +77,15 @@ func (service DefaultTransferService) DoTransfer(transferRequest *dto.Transfer) 
 			Status:             "OK",
 		}
 
-		if err = service.accountRepository.Update(originAccount, tx); err != nil {
+		if err = service.accountRepository.Update(context, tx, originAccount); err != nil {
 			return err
 		}
 
-		if err = service.accountRepository.Update(destinationAccount, tx); err != nil {
+		if err = service.accountRepository.Update(context, tx, destinationAccount); err != nil {
 			return err
 		}
 
-		if err = service.transferRepository.Create(transfer, tx); err != nil {
+		if err = service.transferRepository.Create(context, tx, transfer); err != nil {
 			return err
 		}
 
@@ -100,12 +101,12 @@ func (service DefaultTransferService) DoTransfer(transferRequest *dto.Transfer) 
 	return transferResponse
 }
 
-func (service DefaultTransferService) FindTransfer(id int64) (*model.Transfer, *exception.Exception) {
+func (service DefaultTransferService) FindTransfer(context context.Context, id int64) (*model.Transfer, *exception.Exception) {
 	var err error
 	var transfer *model.Transfer
 	err = service.HandleTransaction(func(tx *sql.Tx) error {
 
-		transfer, err = service.transferRepository.FindById(id, tx)
+		transfer, err = service.transferRepository.FindById(context, tx, id)
 		if err != nil {
 			return err
 		}
@@ -120,12 +121,12 @@ func (service DefaultTransferService) FindTransfer(id int64) (*model.Transfer, *
 	return transfer, nil
 }
 
-func (service DefaultTransferService) FindTransfers() (*[]model.Transfer, *exception.Exception) {
+func (service DefaultTransferService) FindTransfers(context context.Context) (*[]model.Transfer, *exception.Exception) {
 	var err error
 	var transfer *[]model.Transfer
 	err = service.HandleTransaction(func(tx *sql.Tx) error {
 
-		transfer, err = service.transferRepository.FindAll(tx)
+		transfer, err = service.transferRepository.FindAll(context, tx)
 		if err != nil {
 			return err
 		}

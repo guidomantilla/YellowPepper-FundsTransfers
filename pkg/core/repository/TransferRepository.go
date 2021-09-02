@@ -2,6 +2,7 @@ package repository
 
 import (
 	"YellowPepper-FundsTransfers/pkg/core/model"
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -10,9 +11,9 @@ import (
 /* TYPES DEFINITION */
 
 type TransferRepository interface {
-	Create(transfer *model.Transfer, tx *sql.Tx) error
-	FindById(id int64, tx *sql.Tx) (*model.Transfer, error)
-	FindAll(tx *sql.Tx) (*[]model.Transfer, error)
+	Create(context context.Context, tx *sql.Tx, transfer *model.Transfer) error
+	FindById(context context.Context, tx *sql.Tx, id int64) (*model.Transfer, error)
+	FindAll(context context.Context, tx *sql.Tx) (*[]model.Transfer, error)
 }
 
 type DefaultTransferRepository struct {
@@ -31,7 +32,7 @@ func NewDefaultTransferRepository() *DefaultTransferRepository {
 	}
 }
 
-func (repository *DefaultTransferRepository) Create(transfer *model.Transfer, tx *sql.Tx) error {
+func (repository *DefaultTransferRepository) Create(context context.Context, tx *sql.Tx, transfer *model.Transfer) error {
 	statement, err := tx.Prepare(repository.statementCreate)
 	if err != nil {
 		return err
@@ -51,7 +52,7 @@ func (repository *DefaultTransferRepository) Create(transfer *model.Transfer, tx
 	return nil
 }
 
-func (repository *DefaultTransferRepository) FindById(id int64, tx *sql.Tx) (*model.Transfer, error) {
+func (repository *DefaultTransferRepository) FindById(context context.Context, tx *sql.Tx, id int64) (*model.Transfer, error) {
 	statement, err := tx.Prepare(repository.statementFindById)
 	if err != nil {
 		return nil, err
@@ -71,7 +72,7 @@ func (repository *DefaultTransferRepository) FindById(id int64, tx *sql.Tx) (*mo
 	return &transfer, nil
 }
 
-func (repository *DefaultTransferRepository) FindAll(tx *sql.Tx) (*[]model.Transfer, error) {
+func (repository *DefaultTransferRepository) FindAll(context context.Context, tx *sql.Tx) (*[]model.Transfer, error) {
 	statement, err := tx.Prepare(repository.statementFind)
 	if err != nil {
 		return nil, err

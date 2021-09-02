@@ -44,7 +44,7 @@ func (ws DefaultAccountWs) Create(context *gin.Context) {
 		return
 	}
 
-	if exception := ws.accountService.Create(&account); exception != nil {
+	if exception := ws.accountService.Create(context, &account); exception != nil {
 		context.JSON(exception.Code, exception)
 		return
 	}
@@ -53,7 +53,7 @@ func (ws DefaultAccountWs) Create(context *gin.Context) {
 }
 
 func (ws DefaultAccountWs) Update(context *gin.Context) {
-
+	context.Request.Context()
 	id, err := strconv.ParseInt(context.Param("id"), 10, 0)
 	if err != nil {
 		exception := exception.BadRequestException("url path has an invalid id", err)
@@ -74,7 +74,7 @@ func (ws DefaultAccountWs) Update(context *gin.Context) {
 		return
 	}
 
-	if exception := ws.accountService.Update(&account); exception != nil {
+	if exception := ws.accountService.Update(context, &account); exception != nil {
 		context.JSON(exception.Code, exception)
 		return
 	}
@@ -97,7 +97,7 @@ func (ws DefaultAccountWs) Delete(context *gin.Context) {
 		return
 	}
 
-	exception := ws.accountService.DeleteById(id)
+	exception := ws.accountService.DeleteById(context, id)
 	if exception != nil {
 		context.JSON(exception.Code, exception)
 		return
@@ -121,7 +121,7 @@ func (ws DefaultAccountWs) FindById(context *gin.Context) {
 		return
 	}
 
-	account, exception := ws.accountService.FindById(id)
+	account, exception := ws.accountService.FindById(context, id)
 	if exception != nil {
 		context.JSON(exception.Code, exception)
 		return
@@ -135,7 +135,7 @@ func (ws DefaultAccountWs) FindAll(context *gin.Context) {
 	status := context.Query("status")
 	fmt.Println(status)
 
-	accounts, exception := ws.accountService.FindAll()
+	accounts, exception := ws.accountService.FindAll(context)
 	if exception != nil {
 		context.JSON(exception.Code, exception)
 		return
