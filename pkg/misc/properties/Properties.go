@@ -23,12 +23,15 @@ func NewProperties() *DefaultProperties {
 }
 func NewPropertiesFromArray(array *[]string) *DefaultProperties {
 	properties := NewProperties()
-	for _, env := range *array {
-		pair := strings.SplitN(env, "=", 2)
-		if len(pair) != 2 {
-			log.Fatalln(fmt.Sprintf("[%s=??] not a key value parameter. expected [key=value]", pair[0]))
+
+	if array != nil {
+		for _, env := range *array {
+			pair := strings.SplitN(env, "=", 2)
+			if len(pair) != 2 {
+				log.Fatalln(fmt.Sprintf("[%s=??] not a key value parameter. expected [key=value]", pair[0]))
+			}
+			properties.Add(pair[0], pair[1])
 		}
-		properties.Add(pair[0], pair[1])
 	}
 
 	return properties

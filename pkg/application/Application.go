@@ -13,16 +13,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	FUND_TRANSFERS_DATASOURCE_USERNAME = "FUND_TRANSFERS_DATASOURCE_USERNAME"
-	FUND_TRANSFERS_DATASOURCE_PASSWORD = "FUND_TRANSFERS_DATASOURCE_PASSWORD"
-	FUND_TRANSFERS_DATASOURCE_URL      = "FUND_TRANSFERS_DATASOURCE_URL"
-	HOST_POST                          = "HOST_POST"
-	HOST_POST_DEFAULT_VALUE            = ":8080"
-	PROFILE                            = "PROFILE"
-	PROFILE_DEFAULT_VALUE              = "default"
-)
-
 var singletonRouter *gin.Engine
 var singletonEnvironment environment.Environment
 
@@ -35,15 +25,15 @@ func Run() error {
 	singletonRouter = gin.Default()
 	config.LoadApiRoutes(singletonRouter, accountWs, transferWs)
 	config.LoadMgmtRoutes(singletonRouter, infoWs, envWs, metricsWs, healthWs)
-	hostAddress := singletonEnvironment.GetValueOrDefault(HOST_POST, HOST_POST_DEFAULT_VALUE).AsString()
+	hostAddress := singletonEnvironment.GetValueOrDefault(config.HOST_POST, config.HOST_POST_DEFAULT_VALUE).AsString()
 	return singletonRouter.Run(hostAddress)
 }
 
 func wireApi(environment environment.Environment) (coreWs.AccountWs, coreWs.TransferWs) {
 
-	username := environment.GetValue(FUND_TRANSFERS_DATASOURCE_USERNAME).AsString()
-	password := environment.GetValue(FUND_TRANSFERS_DATASOURCE_PASSWORD).AsString()
-	url := environment.GetValue(FUND_TRANSFERS_DATASOURCE_URL).AsString()
+	username := environment.GetValue(config.FUND_TRANSFERS_DATASOURCE_USERNAME).AsString()
+	password := environment.GetValue(config.FUND_TRANSFERS_DATASOURCE_PASSWORD).AsString()
+	url := environment.GetValue(config.FUND_TRANSFERS_DATASOURCE_URL).AsString()
 
 	dataSource := datasource.NewMysqlDataSource(username, password, url)
 	transactionHandler := transaction.NewDefaultDBTransactionHandler(dataSource)
@@ -61,9 +51,11 @@ func wireApi(environment environment.Environment) (coreWs.AccountWs, coreWs.Tran
 }
 
 func wireMgmt(environment environment.Environment) (mgmtWs.InfoWs, mgmtWs.EnvWs, mgmtWs.MetricsWs, mgmtWs.HealthWs) {
+
 	infoWs := mgmtWs.NewDefaultInfoWs()
 	envWs := mgmtWs.NewDefaultEnvWs(environment)
 	metricsWs := mgmtWs.NewDefaultMetricsWs()
 	healthWs := mgmtWs.NewDefaultHealthWs()
+
 	return infoWs, envWs, metricsWs, healthWs
 }
