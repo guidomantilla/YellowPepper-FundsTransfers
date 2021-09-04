@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 )
 
 /* TYPES DEFINITION */
@@ -49,7 +50,12 @@ func (repository *DefaultAccountRepository) Create(context context.Context, tx *
 	if err != nil {
 		return err
 	}
-	defer statement.Close()
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Println("Error closing the statement")
+		}
+	}(statement)
 
 	result, err := statement.Exec(account.Number, account.Balance, account.Owner, account.Status)
 	if err != nil {
@@ -70,7 +76,12 @@ func (repository *DefaultAccountRepository) Update(context context.Context, tx *
 	if err != nil {
 		return err
 	}
-	defer statement.Close()
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Println("Error closing the statement")
+		}
+	}(statement)
 
 	_, err = statement.Exec(account.Number, account.Balance, account.Owner, account.Status, account.Id)
 	if err != nil {
@@ -86,7 +97,12 @@ func (repository *DefaultAccountRepository) DeleteById(context context.Context, 
 	if err != nil {
 		return err
 	}
-	defer statement.Close()
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Println("Error closing the statement")
+		}
+	}(statement)
 
 	_, err = statement.Exec(id)
 	if err != nil {
@@ -102,7 +118,12 @@ func (repository *DefaultAccountRepository) FindById(context context.Context, tx
 	if err != nil {
 		return nil, err
 	}
-	defer statement.Close()
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Println("Error closing the statement")
+		}
+	}(statement)
 
 	row := statement.QueryRow(id)
 
@@ -123,13 +144,23 @@ func (repository *DefaultAccountRepository) FindAll(context context.Context, tx 
 	if err != nil {
 		return nil, err
 	}
-	defer statement.Close()
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Println("Error closing the statement")
+		}
+	}(statement)
 
 	rows, err := statement.Query()
-	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			log.Println("Error closing the result set")
+		}
+	}(rows)
 
 	accounts := make([]model.Account, 0)
 	for rows.Next() {
@@ -151,7 +182,12 @@ func (repository *DefaultAccountRepository) FindByNumber(context context.Context
 	if err != nil {
 		return nil, err
 	}
-	defer statement.Close()
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Println("Error closing the statement")
+		}
+	}(statement)
 
 	row := statement.QueryRow(number)
 

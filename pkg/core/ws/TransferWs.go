@@ -28,8 +28,8 @@ func NewDefaultTransferWs(transferService service.TransferService) *DefaultTrans
 func (ws DefaultTransferWs) DoTransfer(context *gin.Context) {
 	var transferRequest dto.Transfer
 	if err := context.ShouldBindJSON(&transferRequest); err != nil {
-		exception := exception.BadRequestException("error unmarshalling request json to object", err)
-		context.JSON(exception.Code, exception)
+		ex := exception.BadRequestException("error unmarshalling request json to object", err)
+		context.JSON(ex.Code, ex)
 		return
 	}
 
@@ -45,20 +45,20 @@ func (ws DefaultTransferWs) DoTransfer(context *gin.Context) {
 func (ws DefaultTransferWs) FindTransfer(context *gin.Context) {
 	id, err := strconv.ParseInt(context.Param("id"), 10, 0)
 	if err != nil {
-		exception := exception.BadRequestException("url path has an invalid id", err)
-		context.JSON(exception.Code, exception)
+		ex :=exception.BadRequestException("url path has an invalid id", err)
+		context.JSON(ex.Code, ex)
 		return
 	}
 
 	if context.Request.Body != http.NoBody {
-		exception := exception.BadRequestException("body not allowed", nil)
-		context.JSON(exception.Code, exception)
+		ex :=exception.BadRequestException("body not allowed", nil)
+		context.JSON(ex.Code, ex)
 		return
 	}
 
-	account, exception := ws.transferService.FindTransfer(context, id)
-	if exception != nil {
-		context.JSON(exception.Code, exception)
+	account, ex :=ws.transferService.FindTransfer(context, id)
+	if ex != nil {
+		context.JSON(ex.Code, ex)
 		return
 	}
 
@@ -67,9 +67,9 @@ func (ws DefaultTransferWs) FindTransfer(context *gin.Context) {
 
 func (ws DefaultTransferWs) FindTransfers(context *gin.Context) {
 
-	accounts, exception := ws.transferService.FindTransfers(context)
-	if exception != nil {
-		context.JSON(exception.Code, exception)
+	accounts, ex :=ws.transferService.FindTransfers(context)
+	if ex != nil {
+		context.JSON(ex.Code, ex)
 		return
 	}
 

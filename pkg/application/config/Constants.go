@@ -1,5 +1,6 @@
 package config
 
+//goland:noinspection ALL
 const (
 	HOST_POST                        = "HOST_POST"
 	HOST_POST_DEFAULT_VALUE          = ":8080"

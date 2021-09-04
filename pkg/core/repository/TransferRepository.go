@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 )
 
 /* TYPES DEFINITION */
@@ -37,7 +38,12 @@ func (repository *DefaultTransferRepository) Create(context context.Context, tx 
 	if err != nil {
 		return err
 	}
-	defer statement.Close()
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Println("Error closing the statement")
+		}
+	}(statement)
 
 	result, err := statement.Exec(transfer.OriginAccount, transfer.DestinationAccount, transfer.Amount, transfer.Date, transfer.Status)
 	if err != nil {
@@ -57,7 +63,12 @@ func (repository *DefaultTransferRepository) FindById(context context.Context, t
 	if err != nil {
 		return nil, err
 	}
-	defer statement.Close()
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Println("Error closing the statement")
+		}
+	}(statement)
 
 	row := statement.QueryRow(id)
 
@@ -77,13 +88,23 @@ func (repository *DefaultTransferRepository) FindAll(context context.Context, tx
 	if err != nil {
 		return nil, err
 	}
-	defer statement.Close()
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Println("Error closing the statement")
+		}
+	}(statement)
 
 	rows, err := statement.Query()
-	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			log.Println("Error closing the result set")
+		}
+	}(rows)
 
 	transfers := make([]model.Transfer, 0)
 	for rows.Next() {
