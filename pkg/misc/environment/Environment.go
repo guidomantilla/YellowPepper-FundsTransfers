@@ -11,6 +11,8 @@ type Environment interface {
 	AppendPropertySources(propertySources ...properties.PropertySource)
 }
 
+// DefaultEnvironment
+
 type DefaultEnvironment struct {
 	propertySources []properties.PropertySource
 }
@@ -53,14 +55,17 @@ type DefaultEnvironmentBuilder struct {
 
 func NewDefaultEnvironment() *DefaultEnvironmentBuilder {
 	return &DefaultEnvironmentBuilder{
-		defaultEnvironment: &DefaultEnvironment{},
+		defaultEnvironment: &DefaultEnvironment{
+			propertySources: make([]properties.PropertySource, 0),
+		},
 	}
-}
-func (builder *DefaultEnvironmentBuilder) WithPropertySources(propertySources ...properties.PropertySource) *DefaultEnvironmentBuilder {
-	builder.defaultEnvironment.propertySources = propertySources
-	return builder
 }
 
 func (builder *DefaultEnvironmentBuilder) Build() *DefaultEnvironment {
 	return builder.defaultEnvironment
+}
+
+func (builder *DefaultEnvironmentBuilder) WithPropertySources(propertySources ...properties.PropertySource) *DefaultEnvironmentBuilder {
+	builder.defaultEnvironment.propertySources = propertySources
+	return builder
 }

@@ -4,6 +4,7 @@ import (
 	"YellowPepper-FundsTransfers/pkg/misc/environment"
 	"YellowPepper-FundsTransfers/pkg/misc/properties"
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -20,33 +21,25 @@ const (
 func LoadEnvironment() environment.Environment {
 
 	cmdArgs := os.Args[1:]
-	cmdSource := properties.NewDefaultPropertySource(CMD_PROPERTY_SOURCE_NAME, properties.NewPropertiesFromArray(&cmdArgs))
+	cmdSource := properties.NewDefaultPropertySource(CMD_PROPERTY_SOURCE_NAME, properties.NewDefaultProperties().FromArray(&cmdArgs).Build())
 
 	osArgs := os.Environ()
-	osSource := properties.NewDefaultPropertySource(OS_PROPERTY_SOURCE_NAME, properties.NewPropertiesFromArray(&osArgs))
+	osSource := properties.NewDefaultPropertySource(OS_PROPERTY_SOURCE_NAME, properties.NewDefaultProperties().FromArray(&osArgs).Build())
 
 	env := environment.NewDefaultEnvironment().WithPropertySources(cmdSource, osSource).Build()
 
-	mainFileArgs := loadMainFile(env)
-	mainFileSource := properties.NewDefaultPropertySource(MAIN_FILE_PROPERTY_SOURCE_NAME, properties.NewPropertiesFromArray(mainFileArgs))
+	resourcesFolder := retrieveResourcesFolder(env)
+	profile := env.GetValueOrDefault(PROFILE, PROFILE_DEFAULT_VALUE).AsString()
 
-	profileFileArgs := loadProfileFile(env)
-	profileFileSource := properties.NewDefaultPropertySource(PROFILE_FILE_PROPERTY_SOURCE_NAME, properties.NewPropertiesFromArray(profileFileArgs))
+	mainFileArgs := readFile(filepath.Join(resourcesFolder, "application.properties"))
+	mainFileSource := properties.NewDefaultPropertySource(MAIN_FILE_PROPERTY_SOURCE_NAME, properties.NewDefaultProperties().FromArray(mainFileArgs).Build())
+
+	profileFileArgs := readFile(filepath.Join(resourcesFolder, "application-"+profile+".properties"))
+	profileFileSource := properties.NewDefaultPropertySource(PROFILE_FILE_PROPERTY_SOURCE_NAME, properties.NewDefaultProperties().FromArray(profileFileArgs).Build())
 
 	env.AppendPropertySources(mainFileSource, profileFileSource)
 
 	return env
-}
-
-func loadMainFile(env environment.Environment) *[]string {
-	resourcesDirectory := retrieveResourcesFolder(env)
-	return readFile(filepath.Join(resourcesDirectory, "application.properties"))
-}
-
-func loadProfileFile(env environment.Environment) *[]string {
-	resourcesDirectory := retrieveResourcesFolder(env)
-	profile := env.GetValueOrDefault(PROFILE, PROFILE_DEFAULT_VALUE).AsString()
-	return readFile(filepath.Join(resourcesDirectory, "application-"+profile+".properties"))
 }
 
 func readFile(fullFileName string) *[]string {
@@ -78,10 +71,12 @@ func readFile(fullFileName string) *[]string {
 
 func retrieveResourcesFolder(env environment.Environment) string {
 	workingDirectory, _ := os.Getwd()
-	sourceRootDirectory := filepath.Join(workingDirectory, env.GetValueOrDefault(SOURCE_FOLDER_NAME, SOURCE_FOLDER_NAME_DEFAULT_VALUE).AsString())
+	sourceFolderName := env.GetValueOrDefault(SOURCE_FOLDER_NAME, SOURCE_FOLDER_NAME_DEFAULT_VALUE).AsString()
+	sourceRootDirectory := filepath.Join(workingDirectory, sourceFolderName)
 	if !validateIfFolderExists(sourceRootDirectory) {
 		sourceRootDirectory = filepath.Join(workingDirectory)
 	}
+	log.Println(fmt.Sprintf("Configured Resources Folder: %s", sourceRootDirectory))
 	return filepath.Join(sourceRootDirectory, ".resources")
 }
 
