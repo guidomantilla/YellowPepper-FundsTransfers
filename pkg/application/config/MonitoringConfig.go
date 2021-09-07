@@ -60,8 +60,7 @@ func InitMonitoring(environment environment.Environment) {
 
 func sentryHook(entry zapcore.Entry) error {
 	if entry.Level == zapcore.ErrorLevel {
-		sentry.CaptureMessage(fmt.Sprintf("%s, Line No: %d :: %s", entry.Caller.File, entry.Caller.Line, entry.Message))
-		sentry.CaptureException(errors.New(entry.Message))
+		sentry.CaptureException(errors.New(fmt.Sprintf("%s, Line No: %d :: %s", entry.Caller.File, entry.Caller.Line, entry.Message)))
 	}
 	return nil
 }
