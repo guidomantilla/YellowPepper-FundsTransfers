@@ -9,24 +9,33 @@ import (
 	"YellowPepper-FundsTransfers/pkg/misc/datasource"
 	"YellowPepper-FundsTransfers/pkg/misc/environment"
 	"YellowPepper-FundsTransfers/pkg/misc/transaction"
+	"fmt"
 
-	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
-var singletonRouter *gin.Engine
-var singletonEnvironment environment.Environment
+func Stop() error {
+
+	return config.StopMonitoring()
+}
 
 func Run() error {
 
-	singletonEnvironment = config.LoadEnvironment()
+	singletonEnvironment := config.LoadEnvironment()
+	config.InitMonitoring(singletonEnvironment)
+
+	for _, source := range singletonEnvironment.GetPropertySources() {
+		name := source.AsMap()["name"]
+		internalMap := source.AsMap()["value"].(map[string]string)
+		for key, value := range internalMap {
+			zap.L().Debug(fmt.Sprintf("source name: %s, key: %s, value: %s", name, key, value))
+		}
+	}
+
 	accountWs, transferWs := wireApi(singletonEnvironment)
 	infoWs, envWs, metricsWs, healthWs := wireMgmt(singletonEnvironment)
 
-	singletonRouter = gin.Default()
-	config.LoadApiRoutes(singletonRouter, accountWs, transferWs)
-	config.LoadMgmtRoutes(singletonRouter, infoWs, envWs, metricsWs, healthWs)
-	hostAddress := singletonEnvironment.GetValueOrDefault(config.HOST_POST, config.HOST_POST_DEFAULT_VALUE).AsString()
-	return singletonRouter.Run(hostAddress)
+	return config.InitWebServer(singletonEnvironment, accountWs, transferWs, infoWs, envWs, metricsWs, healthWs)
 }
 
 func wireApi(environment environment.Environment) (coreWs.AccountWs, coreWs.TransferWs) {

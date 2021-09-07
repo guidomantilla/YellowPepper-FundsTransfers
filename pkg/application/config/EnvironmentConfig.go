@@ -4,8 +4,6 @@ import (
 	"YellowPepper-FundsTransfers/pkg/misc/environment"
 	"YellowPepper-FundsTransfers/pkg/misc/files"
 	"YellowPepper-FundsTransfers/pkg/misc/properties"
-	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 )
@@ -16,7 +14,6 @@ const (
 	MAIN_FILE_PROPERTY_SOURCE_NAME    = "MAIN-FILE"
 	PROFILE_FILE_PROPERTY_SOURCE_NAME = "PROFILE-FILE"
 )
-
 func LoadEnvironment() environment.Environment {
 
 	cmdArgs := os.Args[1:]
@@ -48,7 +45,5 @@ func retrieveResourcesFolder(env environment.Environment) string {
 	if !files.ValidateIfFolderExists(sourceRootDirectory) {
 		sourceRootDirectory = filepath.Join(workingDirectory)
 	}
-	log.Println(fmt.Sprintf("Configured Resources Folder: %s", sourceRootDirectory))
 	return filepath.Join(sourceRootDirectory, ".resources")
 }
-
