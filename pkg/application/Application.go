@@ -16,7 +16,10 @@ import (
 
 func Stop() error {
 
-	return config.StopMonitoring()
+	if err := config.StopMonitoring(); err != nil {
+		return err
+	}
+	return config.StopWebServer()
 }
 
 func Run() error {
@@ -29,7 +32,7 @@ func Run() error {
 		internalMap := source.AsMap()["value"].(map[string]string)
 		for key, value := range internalMap {
 			zap.L().Debug(fmt.Sprintf("source name: %s, key: %s, value: %s", name, key, value))
-			zap.L().Error(fmt.Sprintf("source name: %s, key: %s, value: %s", name, key, value))
+			//zap.L().Error(fmt.Sprintf("source name: %s, key: %s, value: %s", name, key, value))
 		}
 	}
 

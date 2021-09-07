@@ -41,8 +41,13 @@ func InitMonitoring(environment environment.Environment) {
 	}
 
 	// Setup Zap
+	level := zapcore.Level(0)
+	if err := level.UnmarshalText([]byte(environment.GetValue("LOG_LEVEL").AsString())); err != nil {
+		log.Fatalln(fmt.Sprintf("wrong zap log level: %s", err))
+	}
+
 	loggerConfig := zap.Config{
-		Level:            zap.NewAtomicLevelAt(zapcore.DebugLevel),
+		Level:            zap.NewAtomicLevelAt(level),
 		Development:      true,
 		Encoding:         "console",
 		EncoderConfig:    zap.NewDevelopmentEncoderConfig(),
