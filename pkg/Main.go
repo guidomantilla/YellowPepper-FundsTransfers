@@ -2,18 +2,16 @@ package main
 
 import (
 	"YellowPepper-FundsTransfers/pkg/application"
-
-	"go.uber.org/zap"
+	"log"
 )
 
 func main() {
-	err := application.Run()
-	if err != nil {
-		zap.L().Fatal(err.Error())
+
+	if err := application.Run(); err != nil {
+		log.Fatalln(err.Error())
 	}
 
-	err = application.Stop()
-	if err != nil {
-		zap.L().Fatal(err.Error())
+	if err := application.Stop(); err != nil {
+		log.Fatalln(err.Error())
 	}
 }
