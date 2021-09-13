@@ -28,8 +28,8 @@ func Run() error {
 	config.InitMonitoring(singletonEnvironment)
 
 	for _, source := range singletonEnvironment.GetPropertySources() {
-		name := source.AsMap()["name"]
-		internalMap := source.AsMap()["value"].(map[string]string)
+		sourceMap := source.AsMap()
+		name, internalMap := sourceMap["name"], sourceMap["value"].(map[string]string)
 		for key, value := range internalMap {
 			zap.L().Debug(fmt.Sprintf("source name: %s, key: %s, value: %s", name, key, value))
 			//zap.L().Error(fmt.Sprintf("source name: %s, key: %s, value: %s", name, key, value))
