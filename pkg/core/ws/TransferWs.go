@@ -25,7 +25,8 @@ func NewDefaultTransferWs(transferService service.TransferService) *DefaultTrans
 		transferService: transferService,
 	}
 }
-func (ws DefaultTransferWs) DoTransfer(context *gin.Context) {
+
+func (ws *DefaultTransferWs) DoTransfer(context *gin.Context) {
 	var transferRequest dto.Transfer
 	if err := context.ShouldBindJSON(&transferRequest); err != nil {
 		ex := exception.BadRequestException("error unmarshalling request json to object", err)
@@ -42,7 +43,7 @@ func (ws DefaultTransferWs) DoTransfer(context *gin.Context) {
 	context.JSON(http.StatusCreated, transferResponse)
 }
 
-func (ws DefaultTransferWs) FindTransfer(context *gin.Context) {
+func (ws *DefaultTransferWs) FindTransfer(context *gin.Context) {
 	id, err := strconv.ParseInt(context.Param("id"), 10, 0)
 	if err != nil {
 		ex :=exception.BadRequestException("url path has an invalid id", err)
@@ -65,7 +66,7 @@ func (ws DefaultTransferWs) FindTransfer(context *gin.Context) {
 	context.JSON(http.StatusOK, account)
 }
 
-func (ws DefaultTransferWs) FindTransfers(context *gin.Context) {
+func (ws *DefaultTransferWs) FindTransfers(context *gin.Context) {
 
 	accounts, ex :=ws.transferService.FindTransfers(context)
 	if ex != nil {

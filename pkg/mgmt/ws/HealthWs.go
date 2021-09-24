@@ -27,7 +27,7 @@ func NewDefaultHealthWs() *DefaultHealthWs {
 
 /* DefaultMetricsWs METHODS */
 
-func (ws DefaultHealthWs) Get(context *gin.Context) {
+func (ws *DefaultHealthWs) Get(context *gin.Context) {
 	response := HealthWsResponse{
 		Status: "UP",
 	}

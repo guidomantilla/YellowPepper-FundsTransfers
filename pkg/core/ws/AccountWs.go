@@ -35,7 +35,7 @@ func NewDefaultAccountWs(accountService service.AccountService) *DefaultAccountW
 
 /* DefaultAccountWs METHODS */
 
-func (ws DefaultAccountWs) Create(context *gin.Context) {
+func (ws *DefaultAccountWs) Create(context *gin.Context) {
 
 	var account model.Account
 	if err := context.ShouldBindJSON(&account); err != nil {
@@ -52,7 +52,7 @@ func (ws DefaultAccountWs) Create(context *gin.Context) {
 	context.JSON(http.StatusCreated, account)
 }
 
-func (ws DefaultAccountWs) Update(context *gin.Context) {
+func (ws *DefaultAccountWs) Update(context *gin.Context) {
 	context.Request.Context()
 	id, err := strconv.ParseInt(context.Param("id"), 10, 0)
 	if err != nil {
@@ -82,7 +82,7 @@ func (ws DefaultAccountWs) Update(context *gin.Context) {
 	context.JSON(http.StatusOK, account)
 }
 
-func (ws DefaultAccountWs) Delete(context *gin.Context) {
+func (ws *DefaultAccountWs) Delete(context *gin.Context) {
 
 	id, err := strconv.ParseInt(context.Param("id"), 10, 0)
 	if err != nil {
@@ -105,7 +105,7 @@ func (ws DefaultAccountWs) Delete(context *gin.Context) {
 	context.Status(http.StatusOK)
 }
 
-func (ws DefaultAccountWs) FindById(context *gin.Context) {
+func (ws *DefaultAccountWs) FindById(context *gin.Context) {
 
 	id, err := strconv.ParseInt(context.Param("id"), 10, 0)
 	if err != nil {
@@ -129,7 +129,7 @@ func (ws DefaultAccountWs) FindById(context *gin.Context) {
 	context.JSON(http.StatusOK, account)
 }
 
-func (ws DefaultAccountWs) FindAll(context *gin.Context) {
+func (ws *DefaultAccountWs) FindAll(context *gin.Context) {
 
 	status := context.Query("status")
 	fmt.Println(status)

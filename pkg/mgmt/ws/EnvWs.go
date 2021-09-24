@@ -31,7 +31,7 @@ func NewDefaultEnvWs(environment environment.Environment) *DefaultEnvWs {
 
 /* DefaultEnvWs METHODS */
 
-func (ws DefaultEnvWs) Get(context *gin.Context) {
+func (ws *DefaultEnvWs) Get(context *gin.Context) {
 
 	response := EnvWsResponse{
 		EnvironmentVariables: make([]map[string]interface{}, len(ws.environment.GetPropertySources())),

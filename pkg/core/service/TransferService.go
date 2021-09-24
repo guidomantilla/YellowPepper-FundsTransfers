@@ -37,7 +37,7 @@ func NewDefaultTransferService(dbTransactionHandler transaction.DBTransactionHan
 
 /* DefaultTransferService METHODS */
 
-func (service DefaultTransferService) DoTransfer(context context.Context, transferRequest *dto.Transfer) *dto.Transfer {
+func (service *DefaultTransferService) DoTransfer(context context.Context, transferRequest *dto.Transfer) *dto.Transfer {
 
 	transferResponse := &dto.Transfer{
 		OriginAccount:      transferRequest.OriginAccount,
@@ -101,7 +101,7 @@ func (service DefaultTransferService) DoTransfer(context context.Context, transf
 	return transferResponse
 }
 
-func (service DefaultTransferService) FindTransfer(context context.Context, id int64) (*model.Transfer, *exception.Exception) {
+func (service *DefaultTransferService) FindTransfer(context context.Context, id int64) (*model.Transfer, *exception.Exception) {
 	var err error
 	var transfer *model.Transfer
 	err = service.HandleTransaction(func(tx *sql.Tx) error {
@@ -121,7 +121,7 @@ func (service DefaultTransferService) FindTransfer(context context.Context, id i
 	return transfer, nil
 }
 
-func (service DefaultTransferService) FindTransfers(context context.Context) (*[]model.Transfer, *exception.Exception) {
+func (service *DefaultTransferService) FindTransfers(context context.Context) (*[]model.Transfer, *exception.Exception) {
 	var err error
 	var transfer *[]model.Transfer
 	err = service.HandleTransaction(func(tx *sql.Tx) error {

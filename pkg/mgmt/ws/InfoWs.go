@@ -27,6 +27,6 @@ func NewDefaultInfoWs() *DefaultInfoWs {
 
 /* DefaultInfoWs METHODS */
 
-func (ws DefaultInfoWs) Get(context *gin.Context) {
+func (ws *DefaultInfoWs) Get(context *gin.Context) {
 	context.Data(http.StatusOK, "text/text", []byte(infoTXT))
 }

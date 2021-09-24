@@ -37,7 +37,7 @@ func NewDefaultAccountService(dbTransactionHandler transaction.DBTransactionHand
 
 /* DefaultAccountService METHODS */
 
-func (service DefaultAccountService) Create(context context.Context, account *model.Account) *exception.Exception {
+func (service *DefaultAccountService) Create(context context.Context, account *model.Account) *exception.Exception {
 
 	if err := createAccountValidation(account); err != nil {
 		return exception.BadRequestException("error creating the account", err)
@@ -59,7 +59,7 @@ func (service DefaultAccountService) Create(context context.Context, account *mo
 	return nil
 }
 
-func (service DefaultAccountService) Update(context context.Context, account *model.Account) *exception.Exception {
+func (service *DefaultAccountService) Update(context context.Context, account *model.Account) *exception.Exception {
 
 	if err := updateAccountValidation(account); err != nil {
 		return exception.BadRequestException("error updating the account", err)
@@ -84,7 +84,7 @@ func (service DefaultAccountService) Update(context context.Context, account *mo
 	return nil
 }
 
-func (service DefaultAccountService) DeleteById(context context.Context, id int64) *exception.Exception {
+func (service *DefaultAccountService) DeleteById(context context.Context, id int64) *exception.Exception {
 
 	err := service.HandleTransaction(func(tx *sql.Tx) error {
 
@@ -106,7 +106,7 @@ func (service DefaultAccountService) DeleteById(context context.Context, id int6
 
 }
 
-func (service DefaultAccountService) FindById(context context.Context, id int64) (*model.Account, *exception.Exception) {
+func (service *DefaultAccountService) FindById(context context.Context, id int64) (*model.Account, *exception.Exception) {
 
 	var err error
 	var account *model.Account
@@ -127,7 +127,7 @@ func (service DefaultAccountService) FindById(context context.Context, id int64)
 	return account, nil
 }
 
-func (service DefaultAccountService) FindAll(context context.Context) (*[]model.Account, *exception.Exception) {
+func (service *DefaultAccountService) FindAll(context context.Context) (*[]model.Account, *exception.Exception) {
 
 	var err error
 	var accounts *[]model.Account
