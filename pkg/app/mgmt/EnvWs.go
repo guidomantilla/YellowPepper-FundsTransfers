@@ -1,4 +1,4 @@
-package ws
+package mgmt
 
 import (
 	"YellowPepper-FundsTransfers/pkg/app/misc/environment"

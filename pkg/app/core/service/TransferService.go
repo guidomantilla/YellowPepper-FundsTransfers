@@ -3,7 +3,7 @@ package service
 import (
 	"YellowPepper-FundsTransfers/pkg/app/core/exception"
 	"YellowPepper-FundsTransfers/pkg/app/core/model"
-	repository2 "YellowPepper-FundsTransfers/pkg/app/core/repository"
+	"YellowPepper-FundsTransfers/pkg/app/core/repository"
 	"YellowPepper-FundsTransfers/pkg/app/core/service/dto"
 	"YellowPepper-FundsTransfers/pkg/app/misc/transaction"
 	"context"
@@ -21,13 +21,13 @@ type TransferService interface {
 
 type DefaultTransferService struct {
 	transaction.DBTransactionHandler
-	transferRepository repository2.TransferRepository
-	accountRepository  repository2.AccountRepository
+	transferRepository repository.TransferRepository
+	accountRepository  repository.AccountRepository
 }
 
 /* TYPES CONSTRUCTOR */
 
-func NewDefaultTransferService(dbTransactionHandler transaction.DBTransactionHandler, transferRepository repository2.TransferRepository, accountRepository repository2.AccountRepository) *DefaultTransferService {
+func NewDefaultTransferService(dbTransactionHandler transaction.DBTransactionHandler, transferRepository repository.TransferRepository, accountRepository repository.AccountRepository) *DefaultTransferService {
 	return &DefaultTransferService{
 		DBTransactionHandler: dbTransactionHandler,
 		transferRepository:   transferRepository,

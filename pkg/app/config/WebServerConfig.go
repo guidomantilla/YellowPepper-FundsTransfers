@@ -1,8 +1,8 @@
 package config
 
 import (
-	ws2 "YellowPepper-FundsTransfers/pkg/app/core/ws"
-	"YellowPepper-FundsTransfers/pkg/app/mgmt/ws"
+	"YellowPepper-FundsTransfers/pkg/app/core/ws"
+	"YellowPepper-FundsTransfers/pkg/app/mgmt"
 	"YellowPepper-FundsTransfers/pkg/app/misc/environment"
 
 	"github.com/gin-gonic/gin"
@@ -14,8 +14,8 @@ func StopWebServer() {
 	//Nothing to do here yet
 }
 
-func InitWebServer(environment environment.Environment, accountWs ws2.AccountWs, transferWs ws2.TransferWs,
-	infoWs ws.InfoWs, envWs ws.EnvWs, metricsWs ws.MetricsWs, healthWs ws.HealthWs) error {
+func InitWebServer(environment environment.Environment, accountWs ws.AccountWs, transferWs ws.TransferWs,
+	infoWs mgmt.InfoWs, envWs mgmt.EnvWs, metricsWs mgmt.MetricsWs, healthWs mgmt.HealthWs) error {
 
 	singletonEngine = gin.Default()
 
@@ -26,7 +26,7 @@ func InitWebServer(environment environment.Environment, accountWs ws2.AccountWs,
 	return singletonEngine.Run(hostAddress)
 }
 
-func loadApiRoutes(accountWs ws2.AccountWs, transferWs ws2.TransferWs) {
+func loadApiRoutes(accountWs ws.AccountWs, transferWs ws.TransferWs) {
 
 	api := singletonEngine.Group("/api")
 
@@ -47,7 +47,7 @@ func loadApiRoutes(accountWs ws2.AccountWs, transferWs ws2.TransferWs) {
 	api.DELETE("/accounts/:id", accountWs.Delete)
 }
 
-func loadMgmtRoutes(infoWs ws.InfoWs, envWs ws.EnvWs, metricsWs ws.MetricsWs, healthWs ws.HealthWs) {
+func loadMgmtRoutes(infoWs mgmt.InfoWs, envWs mgmt.EnvWs, metricsWs mgmt.MetricsWs, healthWs mgmt.HealthWs) {
 
 	mgmt := singletonEngine.Group("/mgmt")
 	mgmt.GET("/info", infoWs.Get)
