@@ -17,10 +17,3 @@ func ExecuteAppCmd() {
 		log.Fatalln(err.Error())
 	}
 }
-
-func CreateAppCmd() *cobra.Command {
-	return &cobra.Command{
-		Use:   "app",
-		Short: "Application Description",
-	}
-}
