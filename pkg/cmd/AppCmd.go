@@ -7,10 +7,11 @@ import (
 )
 
 func ExecuteAppCmd() {
-	appCmd := CreateAppCmd()
-	serveCmd := CreateServeCmd()
-	migrateCmd := CreateMigrateCmd()
-	appCmd.AddCommand(serveCmd, migrateCmd)
+	appCmd := &cobra.Command{
+		Use:   "app",
+		Short: "Application Description",
+	}
+	appCmd.AddCommand(CreateServeCmd(), CreateMigrateCmd())
 
 	if err := appCmd.Execute(); err != nil {
 		log.Fatalln(err.Error())
