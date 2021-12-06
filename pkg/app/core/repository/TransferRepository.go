@@ -12,9 +12,9 @@ import (
 /* TYPES DEFINITION */
 
 type TransferRepository interface {
-	Create(context context.Context, tx *sql.Tx, transfer *model.Transfer) error
-	FindById(context context.Context, tx *sql.Tx, id int64) (*model.Transfer, error)
-	FindAll(context context.Context, tx *sql.Tx) (*[]model.Transfer, error)
+	Create(_ context.Context, tx *sql.Tx, transfer *model.Transfer) error
+	FindById(_ context.Context, tx *sql.Tx, id int64) (*model.Transfer, error)
+	FindAll(_ context.Context, tx *sql.Tx) (*[]model.Transfer, error)
 }
 
 type DefaultTransferRepository struct {
@@ -33,7 +33,7 @@ func NewDefaultTransferRepository() *DefaultTransferRepository {
 	}
 }
 
-func (repository *DefaultTransferRepository) Create(context context.Context, tx *sql.Tx, transfer *model.Transfer) error {
+func (repository *DefaultTransferRepository) Create(_ context.Context, tx *sql.Tx, transfer *model.Transfer) error {
 	statement, err := tx.Prepare(repository.statementCreate)
 	if err != nil {
 		return err
@@ -58,7 +58,7 @@ func (repository *DefaultTransferRepository) Create(context context.Context, tx 
 	return nil
 }
 
-func (repository *DefaultTransferRepository) FindById(context context.Context, tx *sql.Tx, id int64) (*model.Transfer, error) {
+func (repository *DefaultTransferRepository) FindById(_ context.Context, tx *sql.Tx, id int64) (*model.Transfer, error) {
 	statement, err := tx.Prepare(repository.statementFindById)
 	if err != nil {
 		return nil, err
@@ -83,7 +83,7 @@ func (repository *DefaultTransferRepository) FindById(context context.Context, t
 	return &transfer, nil
 }
 
-func (repository *DefaultTransferRepository) FindAll(context context.Context, tx *sql.Tx) (*[]model.Transfer, error) {
+func (repository *DefaultTransferRepository) FindAll(_ context.Context, tx *sql.Tx) (*[]model.Transfer, error) {
 	statement, err := tx.Prepare(repository.statementFind)
 	if err != nil {
 		return nil, err

@@ -14,9 +14,9 @@ import (
 /* TYPES DEFINITION */
 
 type TransferService interface {
-	DoTransfer(context context.Context, transferRequest *dto.Transfer) *dto.Transfer
-	FindTransfer(context context.Context, id int64) (*model.Transfer, *exception.Exception)
-	FindTransfers(context context.Context) (*[]model.Transfer, *exception.Exception)
+	DoTransfer(ctx context.Context, transferRequest *dto.Transfer) *dto.Transfer
+	FindTransfer(ctx context.Context, id int64) (*model.Transfer, *exception.Exception)
+	FindTransfers(ctx context.Context) (*[]model.Transfer, *exception.Exception)
 }
 
 type DefaultTransferService struct {
@@ -37,7 +37,7 @@ func NewDefaultTransferService(dbTransactionHandler transaction.DBTransactionHan
 
 /* DefaultTransferService METHODS */
 
-func (service *DefaultTransferService) DoTransfer(context context.Context, transferRequest *dto.Transfer) *dto.Transfer {
+func (service *DefaultTransferService) DoTransfer(ctx context.Context, transferRequest *dto.Transfer) *dto.Transfer {
 
 	transferResponse := &dto.Transfer{
 		OriginAccount:      transferRequest.OriginAccount,
@@ -52,12 +52,12 @@ func (service *DefaultTransferService) DoTransfer(context context.Context, trans
 
 	err := service.HandleTransaction(func(tx *sql.Tx) error {
 
-		originAccount, err := service.accountRepository.FindByNumber(context, tx, transferRequest.OriginAccount)
+		originAccount, err := service.accountRepository.FindByNumber(ctx, tx, transferRequest.OriginAccount)
 		if err != nil {
 			return err
 		}
 
-		destinationAccount, err := service.accountRepository.FindByNumber(context, tx, transferRequest.DestinationAccount)
+		destinationAccount, err := service.accountRepository.FindByNumber(ctx, tx, transferRequest.DestinationAccount)
 		if err != nil {
 			return err
 		}
@@ -77,15 +77,15 @@ func (service *DefaultTransferService) DoTransfer(context context.Context, trans
 			Status:             "OK",
 		}
 
-		if err = service.accountRepository.Update(context, tx, originAccount); err != nil {
+		if err = service.accountRepository.Update(ctx, tx, originAccount); err != nil {
 			return err
 		}
 
-		if err = service.accountRepository.Update(context, tx, destinationAccount); err != nil {
+		if err = service.accountRepository.Update(ctx, tx, destinationAccount); err != nil {
 			return err
 		}
 
-		if err = service.transferRepository.Create(context, tx, transfer); err != nil {
+		if err = service.transferRepository.Create(ctx, tx, transfer); err != nil {
 			return err
 		}
 
@@ -101,12 +101,12 @@ func (service *DefaultTransferService) DoTransfer(context context.Context, trans
 	return transferResponse
 }
 
-func (service *DefaultTransferService) FindTransfer(context context.Context, id int64) (*model.Transfer, *exception.Exception) {
+func (service *DefaultTransferService) FindTransfer(ctx context.Context, id int64) (*model.Transfer, *exception.Exception) {
 	var err error
 	var transfer *model.Transfer
 	err = service.HandleTransaction(func(tx *sql.Tx) error {
 
-		transfer, err = service.transferRepository.FindById(context, tx, id)
+		transfer, err = service.transferRepository.FindById(ctx, tx, id)
 		if err != nil {
 			return err
 		}
@@ -121,12 +121,12 @@ func (service *DefaultTransferService) FindTransfer(context context.Context, id 
 	return transfer, nil
 }
 
-func (service *DefaultTransferService) FindTransfers(context context.Context) (*[]model.Transfer, *exception.Exception) {
+func (service *DefaultTransferService) FindTransfers(ctx context.Context) (*[]model.Transfer, *exception.Exception) {
 	var err error
 	var transfer *[]model.Transfer
 	err = service.HandleTransaction(func(tx *sql.Tx) error {
 
-		transfer, err = service.transferRepository.FindAll(context, tx)
+		transfer, err = service.transferRepository.FindAll(ctx, tx)
 		if err != nil {
 			return err
 		}

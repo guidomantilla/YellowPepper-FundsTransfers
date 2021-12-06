@@ -12,12 +12,12 @@ import (
 /* TYPES DEFINITION */
 
 type AccountRepository interface {
-	Create(context context.Context, tx *sql.Tx, account *model.Account) error
-	Update(context context.Context, tx *sql.Tx, account *model.Account) error
-	DeleteById(context context.Context, tx *sql.Tx, id int64) error
-	FindById(context context.Context, tx *sql.Tx, id int64) (*model.Account, error)
-	FindAll(context context.Context, tx *sql.Tx) (*[]model.Account, error)
-	FindByNumber(context context.Context, tx *sql.Tx, number int64) (*model.Account, error)
+	Create(_ context.Context, tx *sql.Tx, account *model.Account) error
+	Update(_ context.Context, tx *sql.Tx, account *model.Account) error
+	DeleteById(_ context.Context, tx *sql.Tx, id int64) error
+	FindById(_ context.Context, tx *sql.Tx, id int64) (*model.Account, error)
+	FindAll(_ context.Context, tx *sql.Tx) (*[]model.Account, error)
+	FindByNumber(_ context.Context, tx *sql.Tx, number int64) (*model.Account, error)
 }
 
 type DefaultAccountRepository struct {
@@ -44,7 +44,7 @@ func NewDefaultAccountRepository() *DefaultAccountRepository {
 
 /* DefaultAccountRepository METHODS */
 
-func (repository *DefaultAccountRepository) Create(context context.Context, tx *sql.Tx, account *model.Account) error {
+func (repository *DefaultAccountRepository) Create(_ context.Context, tx *sql.Tx, account *model.Account) error {
 
 	statement, err := tx.Prepare(repository.statementCreate)
 	if err != nil {
@@ -70,7 +70,7 @@ func (repository *DefaultAccountRepository) Create(context context.Context, tx *
 	return nil
 }
 
-func (repository *DefaultAccountRepository) Update(context context.Context, tx *sql.Tx, account *model.Account) error {
+func (repository *DefaultAccountRepository) Update(_ context.Context, tx *sql.Tx, account *model.Account) error {
 
 	statement, err := tx.Prepare(repository.statementUpdate)
 	if err != nil {
@@ -91,7 +91,7 @@ func (repository *DefaultAccountRepository) Update(context context.Context, tx *
 	return nil
 }
 
-func (repository *DefaultAccountRepository) DeleteById(context context.Context, tx *sql.Tx, id int64) error {
+func (repository *DefaultAccountRepository) DeleteById(_ context.Context, tx *sql.Tx, id int64) error {
 
 	statement, err := tx.Prepare(repository.statementDelete)
 	if err != nil {
@@ -112,7 +112,7 @@ func (repository *DefaultAccountRepository) DeleteById(context context.Context, 
 	return nil
 }
 
-func (repository *DefaultAccountRepository) FindById(context context.Context, tx *sql.Tx, id int64) (*model.Account, error) {
+func (repository *DefaultAccountRepository) FindById(_ context.Context, tx *sql.Tx, id int64) (*model.Account, error) {
 
 	statement, err := tx.Prepare(repository.statementFindById)
 	if err != nil {
@@ -138,7 +138,7 @@ func (repository *DefaultAccountRepository) FindById(context context.Context, tx
 	return &account, nil
 }
 
-func (repository *DefaultAccountRepository) FindAll(context context.Context, tx *sql.Tx) (*[]model.Account, error) {
+func (repository *DefaultAccountRepository) FindAll(_ context.Context, tx *sql.Tx) (*[]model.Account, error) {
 
 	statement, err := tx.Prepare(repository.statementFind)
 	if err != nil {
@@ -176,7 +176,7 @@ func (repository *DefaultAccountRepository) FindAll(context context.Context, tx 
 	return &accounts, nil
 }
 
-func (repository *DefaultAccountRepository) FindByNumber(context context.Context, tx *sql.Tx, number int64) (*model.Account, error) {
+func (repository *DefaultAccountRepository) FindByNumber(_ context.Context, tx *sql.Tx, number int64) (*model.Account, error) {
 
 	statement, err := tx.Prepare(repository.statementFindByNumber)
 	if err != nil {
