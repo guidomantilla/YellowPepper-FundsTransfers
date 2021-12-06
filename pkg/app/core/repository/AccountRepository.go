@@ -4,7 +4,6 @@ import (
 	"YellowPepper-FundsTransfers/pkg/app/core/model"
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 )
@@ -130,7 +129,7 @@ func (repository *DefaultAccountRepository) FindById(_ context.Context, tx *sql.
 	var account model.Account
 	if err := row.Scan(&account.Id, &account.Number, &account.Balance, &account.Owner, &account.Status); err != nil {
 		if err.Error() == "sql: no rows in result set" {
-			return nil, errors.New(fmt.Sprintf("account with id %d not found", id))
+			return nil, fmt.Errorf("account with id %d not found", id)
 		}
 		return nil, err
 	}

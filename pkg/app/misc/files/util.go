@@ -36,8 +36,5 @@ func ReadFile(fullFileName string) *[]string {
 
 func ValidateIfFolderExists(directory string) bool {
 	_, err := os.Stat(directory)
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }

@@ -41,7 +41,7 @@ type DefaultPropertiesBuilder struct {
 func NewDefaultProperties() *DefaultPropertiesBuilder {
 	return &DefaultPropertiesBuilder{
 		defaultProperties: &DefaultProperties{
-			internalMap: make(map[string]string, 0),
+			internalMap: make(map[string]string),
 		},
 	}
 }

@@ -2,7 +2,6 @@ package config
 
 import (
 	"YellowPepper-FundsTransfers/pkg/app/misc/environment"
-	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -64,7 +63,7 @@ func InitMonitoring(environment environment.Environment) {
 
 func sentryHook(entry zapcore.Entry) error {
 	if entry.Level == zapcore.ErrorLevel {
-		sentry.CaptureException(errors.New(fmt.Sprintf("%s, Line No: %d :: %s", entry.Caller.File, entry.Caller.Line, entry.Message)))
+		sentry.CaptureException(fmt.Errorf("%s, Line No: %d :: %s", entry.Caller.File, entry.Caller.Line, entry.Message))
 	}
 	return nil
 }
